@@ -1,0 +1,795 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dorji's Blog</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Poppins', sans-serif;
+      background: linear-gradient(270deg, #1976d2, #4caf50, #00ffff, #ff9a9e, #9c27b0, #ffeb3b);
+      background-size: 1200% 1200%;
+      animation: gradientShift 50s ease infinite;
+      color: #333;
+    }
+    @keyframes gradientShift {
+      0% {background-position: 0% 50%;}
+      50% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
+    }
+
+    nav {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      background: rgba(25,118,210,0.95);
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+      z-index: 1000;
+      max-height: 80vh;
+      overflow-y: auto;
+      transition: all 0.3s ease;
+    }
+    nav ul {list-style: none; margin: 0; padding: 0;}
+    nav ul li {margin: 10px 0;}
+    nav ul li a {
+      text-decoration: none; color: #fff; font-weight: bold;
+      transition: all 0.3s ease; display: block;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+    nav ul li a:hover {color: #ffeb3b; transform: translateX(-5px);}
+    
+    .phase-btn { color: #ffeb3b !important; border-bottom: 1px dashed rgba(255,255,255,0.4); padding-bottom: 2px; }
+    .back-btn { color: #ff9a9e !important; font-weight: bold; }
+
+    section {display: none; padding: 80px 20px; min-height: 100vh;}
+    section.active {display: block;}
+    section h1 {font-size: 2.5rem; margin-bottom: 20px; color: #1976d2;}
+    section p {font-size: 1.2rem; margin-bottom: 15px;}
+
+    #home {text-align: center; color: #fff;}
+    #home img {
+      width: 220px; border-radius: 50%; margin: 20px auto; display: block;
+      border: 5px solid #fff;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    .animated-title {font-size: 3rem; font-weight: bold;}
+    .animated-subtitle {font-size: 1.3rem; margin-top: 10px; font-weight: 500;}
+
+    /* Quote animation */
+    .quote-container {margin-top: 60px; text-align: center; position: relative; height: 160px;}
+    .quote {
+      font-size: 1.8rem; font-weight: bold; font-family: 'Georgia', serif;
+      opacity: 0; position: absolute; width: 100%; left: 0; top: 0;
+      animation: quoteCycle 30s infinite;
+    }
+    .quote:nth-child(1){animation-delay:0s;}
+    .quote:nth-child(2){animation-delay:10s;}
+    .quote:nth-child(3){animation-delay:20s;}
+    @keyframes quoteCycle {
+      0%{opacity:0; transform:translateY(30px);}
+      10%{opacity:1; transform:translateY(0);}
+      30%{opacity:1;}
+      40%{opacity:0; transform:translateY(-30px);}
+      100%{opacity:0;}
+    }
+
+    #about {
+      background: rgba(255,255,255,0.92);
+      border-radius: 20px;
+      margin: 20px auto;
+      max-width: 900px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(5px);
+    }
+    #about img {
+      width: 250px;
+      height: 250px;
+      object-fit: cover;
+      border-radius: 50%;
+      margin: 20px auto;
+      display: block;
+      border: 5px solid #1976d2;
+      box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease;
+    }
+    #about img:hover {
+      transform: scale(1.05);
+    }
+    
+    #about h1 {
+      font-family: 'Playfair Display', 'Georgia', serif;
+      font-size: 3rem;
+      text-align: center;
+      background: linear-gradient(135deg, #1976d2, #4caf50);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      margin-bottom: 30px;
+      letter-spacing: 2px;
+    }
+    
+    #about p {
+      font-family: 'Merriweather', 'Georgia', serif;
+      font-size: 1.15rem;
+      line-height: 1.8;
+      margin-bottom: 25px;
+      text-align: justify;
+      padding: 0 25px;
+      color: #2c3e50;
+      font-weight: 400;
+    }
+    
+    #about p:first-of-type {
+      font-size: 1.2rem;
+      font-weight: 500;
+      color: #1976d2;
+    }
+    
+    #about p:last-of-type {
+      font-style: italic;
+      border-left: 4px solid #1976d2;
+      padding-left: 25px;
+      background: rgba(25,118,210,0.05);
+    }
+
+    section:not(#home):not(#about) {
+      background: rgba(255,255,255,0.92);
+      border-radius: 20px;
+      margin: 20px auto;
+      max-width: 900px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      backdrop-filter: blur(5px);
+    }
+    section:not(#home):not(#about) h1 {
+      text-align: center;
+      padding-top: 20px;
+      font-family: 'Playfair Display', serif;
+    }
+    section:not(#home):not(#about) p {
+      padding: 0 20px 20px 20px;
+      text-align: center;
+      font-family: 'Merriweather', serif;
+    }
+    
+    @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700;800&family=Merriweather:wght@300;400;700;900&family=Poppins:wght@300;400;500;600;700&display=swap');
+    
+    .menu-enter {
+      animation: fadeIn 0.3s ease;
+    }
+    
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateX(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateX(0);
+      }
+    }
+
+    /* =========================================
+       PHASE II CUSTOM FLOATING & BOUNDARY STYLES
+       ========================================= */
+    .phase2-container {
+      margin: 40px auto;
+      padding: 40px 30px;
+      border-radius: 25px;
+      border: 4px dashed #ff9a9e;
+      background: rgba(255, 255, 255, 0.95);
+      box-shadow: 0 15px 35px rgba(25, 118, 212, 0.15);
+      position: relative;
+      overflow: hidden;
+      animation: floatMotionPhase2 6s ease-in-out infinite;
+    }
+    
+    .phase2-container::before {
+      content: ""; position: absolute; top: -50px; left: -50px; width: 120px; height: 120px;
+      background: rgba(76, 175, 80, 0.15); border-radius: 30% 70% 70% 30% / 30% 30% 70% 70%; pointer-events: none;
+    }
+    .phase2-container::after {
+      content: ""; position: absolute; bottom: -40px; right: -40px; width: 140px; height: 140px;
+      background: rgba(25, 118, 210, 0.1); border-radius: 50%; pointer-events: none;
+    }
+
+    @keyframes floatMotionPhase2 {
+      0% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(0.5deg); }
+      100% { transform: translateY(0px) rotate(0deg); }
+    }
+
+    .phase2-text {
+      font-family: 'Merriweather', serif;
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: #34495e;
+      text-align: justify !important;
+      margin-bottom: 30px;
+    }
+
+    .phase2-link-btn {
+      display: inline-block;
+      margin-top: 15px;
+      padding: 14px 35px;
+      font-family: 'Poppins', sans-serif;
+      font-weight: bold;
+      font-size: 1.1rem;
+      color: #fff !important;
+      background: linear-gradient(135deg, #1976d2, #4caf50);
+      text-decoration: none !important;
+      border-radius: 50px;
+      box-shadow: 0 6px 15px rgba(76,175,80,0.4);
+      transition: all 0.3s ease;
+    }
+    .phase2-link-btn:hover {
+      transform: scale(1.05);
+      box-shadow: 0 8px 22px rgba(25,118,210,0.5);
+    }
+
+    /* =========================================
+       PHASE III CUSTOM FLOATING & RAINBOW STYLES
+       ========================================= */
+    .phase3-outer-frame {
+      perspective: 1000px;
+      padding: 20px;
+    }
+    
+    .phase3-container {
+      margin: 20px auto;
+      padding: 45px 35px;
+      border-radius: 20px;
+      border: 5px solid transparent;
+      border-image: linear-gradient(45deg, #ff3366, #ff9933, #ffff33, #33cc66, #3399ff, #9933ff);
+      border-image-slice: 1;
+      background: rgba(255, 255, 255, 0.96);
+      box-shadow: 0 20px 45px rgba(0,0,0,0.15);
+      animation: floatMotionPhase3 7s ease-in-out infinite;
+    }
+
+    @keyframes floatMotionPhase3 {
+      0% { transform: translateY(0px) translateZ(0px); }
+      50% { transform: translateY(-15px) translateZ(10px); }
+      100% { transform: translateY(0px) translateZ(0px); }
+    }
+
+    .phase3-text {
+      font-family: 'Merriweather', serif;
+      font-size: 1.15rem;
+      line-height: 1.9;
+      color: #2c3e50;
+      text-align: justify !important;
+      margin-bottom: 35px;
+    }
+
+    .circle-link-wrapper {
+      margin-top: 20px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phase3-circle-btn {
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: linear-gradient(45deg, #ff3366, #ff9933, #3399ff, #9933ff);
+      background-size: 300% 300%;
+      animation: gradientShift 4s ease infinite;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: 'Poppins', sans-serif;
+      font-weight: 900;
+      font-size: 1.05rem;
+      line-height: 1.3;
+      color: #fff !important;
+      text-decoration: none !important;
+      box-shadow: 0 10px 25px rgba(153,51,255,0.4);
+      transition: all 0.4s ease;
+      padding: 10px;
+      box-sizing: border-box;
+    }
+
+    .phase3-circle-btn:hover {
+      transform: scale(1.1) rotate(10deg);
+      box-shadow: 0 15px 35px rgba(255,51,102,0.6);
+    }
+
+    /* =========================================
+       NEW SECTIONS: VIDEO & SKILLS STYLES
+       ========================================= */
+    .video-wrapper {
+      padding: 30px;
+      text-align: center;
+    }
+    .video-element {
+      width: 100%;
+      max-width: 720px;
+      border-radius: 15px;
+      box-shadow: 0 8px 25px rgba(0,0,0,0.25);
+      border: 3px solid #1976d2;
+      background-color: #000;
+    }
+
+    .skills-container {
+      padding: 35px 25px;
+    }
+    .skills-passage {
+      font-family: 'Merriweather', serif;
+      font-size: 1.1rem;
+      line-height: 1.8;
+      color: #34495e;
+      text-align: justify;
+      margin-bottom: 35px;
+      background: rgba(25, 118, 210, 0.04);
+      padding: 20px;
+      border-left: 5px solid #1976d2;
+      border-radius: 4px;
+    }
+    .skills-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+      margin-top: 25px;
+    }
+    @media(min-width: 768px) {
+      .skills-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .skill-card {
+      background: #ffffff;
+      border-radius: 12px;
+      padding: 20px;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.06);
+      border-top: 4px solid #4caf50;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+    }
+    .skill-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 22px rgba(0,0,0,0.12);
+    }
+    .skill-icon {
+      font-size: 2rem;
+      line-height: 1;
+      margin-top: 3px;
+    }
+    .skill-info h3 {
+      margin: 0 0 8px 0;
+      font-size: 1.2rem;
+      color: #1976d2;
+      font-family: 'Poppins', sans-serif;
+    }
+    .skill-info p {
+      margin: 0;
+      font-size: 1rem;
+      color: #555;
+      line-height: 1.5;
+      text-align: left !important;
+      padding: 0 !important;
+    }
+  </style>
+</head>
+<body>
+
+  <nav>
+    <ul id="menu">
+      </ul>
+  </nav>
+
+  <section id="home" class="active">
+    <h1 class="animated-title">Welcome to My Blog</h1>
+    <img src="photo/profile.jpg" alt="My Photo" onerror="this.src='https://via.placeholder.com/220?text=Profile+Photo'">
+    <p class="animated-subtitle">Enjoy my SITP journey. Use the menu to explore more.</p>
+    <div class="quote-container">
+      <p class="quote">“Teacher plants the seeds of knowledge that last a lifetime.”</p>
+      <p class="quote">“I find that I learn just as much from my students as they learn from me.”</p>
+      <p class="quote">“A teacher takes a hand, opens a mind and touches a heart.”</p>
+    </div>
+  </section>
+
+  <section id="about">
+    <h1>About Me</h1>
+    <img src="photo/about.jpg" alt="About Me Photo" onerror="this.src='https://via.placeholder.com/250?text=About+Me'">
+    <p>
+      ✨ Hello! I'm <strong>Dorji Khandu</strong>, a student-teacher passionate about blending digital creativity with teaching.
+      Currently, I'm immersed in my teaching practice here at Doteng Lower Secondary School, a pivotal experience in my journey towards
+      completing my degree at Samtse College of Education, where I'm majoring in ICT. The opportunity to learn
+      from experienced educators here at Doteng LSS fills me with excitement, as I embark on my teaching career.
+      My passion for digital design and coding has always driven me, and I'm eager to integrate these skills into
+      my lessons, inspiring my students in innovative ways.
+    </p>
+    <p>
+      🌟 I'm incredibly grateful to be welcomed into the warm and supportive family of this school. This blog will
+      serve as a chronicle of my experiences, a space to reflect on the challenges and triumphs of my time here.
+      It's a privilege to be entrusted with the responsibility of guiding young minds, and I'm committed to doing
+      my utmost to ensure my students grasp the concepts I teach. Join me as I share this transformative journey,
+      filled with growth, learning, and the pursuit of excellence in education. Throughout this blog, i've sahred 
+      numerous insights, photos and videos, all thanks to the wonderful Doteng family. A special thank you to Principal 
+      sir for granting permission to feature these in my posts. i'll be using your information in my blog throughout 
+      the rest of my journey and hope you all continue to support me as i continue to document my experiences here.
+    </p>
+  </section>
+
+  <section id="reflections">
+    <h1>Reflections</h1>
+    <img src="photo/reflection.jpg" alt="Reflection" onerror="this.src='https://via.placeholder.com/600x300?text=Reflection'" style="width:100%; max-width:600px; display:block; margin:20px auto 30px auto; border-radius:15px; box-shadow:0 8px 25px rgba(0,0,0,0.2);">
+    <p style="font-family:'Playfair Display', Georgia, serif; font-size:1.2rem; font-style:italic; line-height:1.9; color:#2c3e50; text-align:center; padding:0 30px; border-left:none;">
+      "Reflection is like holding a mirror up to your experiences. It's taking a moment to pause and consider what happened, why it happened, and what you can learn from it. It's not just about recalling events; it's about digging deeper to understand the meaning behind them."
+    </p>
+    <p style="font-family:'Merriweather', Georgia, serif; font-size:1.1rem; text-align:center; padding:10px 30px 30px 30px; color:#1976d2;">
+      Check out my weekly reflection using the link provided:
+      <a href="https://dorjikhandu123.blogspot.com/2026/03/sitp-journey.html" target="_blank" style="color:#1976d2; font-weight:bold; text-decoration:underline;">View My Weekly Reflections →</a>
+    </p>
+  </section>
+
+  <section id="games">
+    <h1>Games</h1>
+    <img src="photo/games.jpg" alt="Games" class="games-img" onerror="this.src='https://via.placeholder.com/400x250?text=Games'">
+    <p class="games-link">
+      <a href="https://sites.google.com/view/gamesactivity/home" target="_blank">
+        CLICK HERE TO EXPLORE MORE 
+      </a>
+    </p>
+  </section>
+
+  <style>
+    #games { text-align: center; padding: 30px 20px; }
+    .games-img { width: 80%; max-width: 400px; border-radius: 15px; border: 4px solid #4caf50; box-shadow: 0 8px 25px rgba(0,0,0,0.3); margin-bottom: 20px; transition: transform 0.3s ease; }
+    .games-img:hover { transform: scale(1.05); }
+    .games-link a { font-family: 'Poppins', sans-serif; font-size: 1.3rem; font-weight: bold; color: #1976d2; text-decoration: none; transition: 0.3s; }
+    .games-link a:hover { color: #ff9800; text-decoration: underline; }
+  </style>
+
+  <section id="programs">
+    <h1>Programs</h1>
+    <h2>Honoring the 5th King's Birthday</h2>
+    <img src="photo/king photo.jpg" alt="His Majesty King" class="program-img large-img king-animation" onerror="this.src='https://via.placeholder.com/800x400?text=King+Photo'">
+    <p class="program-text">
+      Participating in the celebration of His Majesty's 46th birth anniversary on February 21st with the Doteng family was a deeply moving experience. As a trainee teacher, this moment held special significance. It was a proud transition from celebrating this day as a student to now celebrating it as an educator, embodying the path His Majesty envisions for our youth: to serve and contribute to the nation. This shift underscored the responsibility and honor of shaping young minds and instilling in them the values of service and dedication that His Majesty exemplifies.
+    </p>
+    <p class="program-text">
+      The day's celebration commenced in the school prayer hall with a solemn prayer and the offering of butter lamps, symbolizing wishes for His Majesty's continued good health, happiness, and enduring success. The atmosphere was filled with reverence and gratitude. The school's girl captain, Tshering Choden Zangmo, delivered a thoughtful speech, highlighting the importance of the day and its significance in the context of our national identity and values. The Principal's address further elaborated on the significance of the day, reinforcing the themes of national pride, loyalty, and the importance of striving for excellence in all endeavors. The program culminated in a communal sharing of tea and snacks, fostering a sense of unity and celebration among the school community. It was a day filled with reflection, joy, and a renewed commitment to the principles His Majesty embodies.
+    </p>
+    <img src="photo/king birthday.jpg" alt="King Birthday Celebration" class="program-img medium-img" onerror="this.src='https://via.placeholder.com/700x350?text=King+Birthday'">
+    
+    <h2>Warm Welcome</h2>
+    <p class="program-text">
+      On March 4th, 2026, I was so grateful as all the teachers and students formally welcomed me, my two TP teacher colleagues, and the new science teacher into the Doteng school family. The day was marked by a humble ceremony of བཞུགས་གྲལ་ཕུན་སུམ་ཚོགས་པ (Zhudre Punsum Tsokpa), where we were embraced with respect and joy, expressing hopes that our journey would be filled with inspiration, collaboration, success, and excellence. It was a moment of genuine happiness and one of the most unforgettable days for me as I stepped into my teaching journey. The ceremony underscored our collective excitement and commitment to fostering a supportive and enriching environment for all members of the school.
+    </p>
+    <img src="photo/welcome.jpg" alt="Warm Welcome" class="program-img medium-img" onerror="this.src='https://via.placeholder.com/700x350?text=Welcome'">
+    
+    <h2>School Rimdro</h2>
+    <img src="photo/rimdro.jpg" alt="School Rimdro" class="program-img medium-img" onerror="this.src='https://via.placeholder.com/700x350?text=Rimdro'">
+    <p class="program-text">
+      Friday began early with school Rimdro. I reported to school at the start of the day to take part in the morning Rimdro ritual, and afterwards I spent time in the kitchen assisting two cooks as they prepared tea and arranged lunch for the students, an experience that reminded me how much behind-the-scenes work is needed to keep a school running smoothly. In the afternoon, two of my TP classmates and I resumed volleyball training, organizing the session so that all four houses could practice in turn, guiding students through drills and scrimmages, and taking responsibility for coordinating the schedule and maintaining a positive, disciplined atmosphere as we prepared everyone for the upcoming house-league matches.
+    </p>
+    <p class="program-text">
+      School also celebrated the badge awarding ceremony for the school leaders during school Rimdro and celebrated World Oral Health Day.
+    </p>
+    
+    <h2>First Parent-Teacher Meeting (PTM)</h2>
+    <p class="program-text">
+      On March 14th, our school successfully held its first Parent-Teacher Meeting (PTM) for the 2026 academic year, marking a significant step in fostering a strong school-home partnership. The day began with the punctual arrival of parents, students, and teachers at 8:00 AM, followed by a morning assembly at 8:30 AM, setting a positive tone for the day's events. Parents were then thoughtfully directed to their respective classrooms, ensuring a focused and organized environment for the discussions ahead. While the parents engaged in the meeting sessions, the students participated in a school-wide cleaning initiative, promoting a sense of responsibility and community.
+    </p>
+    <p class="program-text">
+      The core of the PTM revolved around Zoom meetings, with each class teacher taking the lead in presenting to the parents. The non-class teachers provided invaluable support, assisting with the smooth conduct of the meetings; I had the privilege of assisting the Class 8 teacher. The discussions covered the academic and non-academic achievements of the students in 2025, as well as the plans and expectations for 2026. Neten sir provided an insightful overview of the school's diverse programs and activities, extending beyond academics. He used a comprehensive PowerPoint presentation to showcase the school's games and sports programs, from traditional Bhutanese games to modern sports, as well as cultural activities, scouting programs, value education initiatives, and physical exercises. This comprehensive approach highlighted the school's commitment to holistic education.
+    </p>
+    <p class="program-text">
+      The Principal emphasized the crucial role of parents in guiding their children, addressing the risks and vulnerabilities students face with modern technology and the upcoming monsoon season. The PTM not only focused on the educational aspects of the students but also underscored the strong partnership between parents and the school. This collaboration is essential in creating a nurturing and supportive environment, ultimately helping to shape the best possible future for our students. The session concluded around 2:00 PM with tea and snacks, providing a moment of camaraderie for teachers, parents, and students alike, solidifying the collaborative spirit that defines our school community.
+    </p>
+  </section>
+
+  <style>
+    #programs { text-align: center; padding: 30px 20px; }
+    #programs h2 { font-family: 'Playfair Display', serif; font-size: 2rem; color: #1976d2; margin: 25px 0 15px; }
+    .program-img { width: 80%; max-width: 800px; height: auto; border-radius: 20px; border: 5px solid transparent; margin: 20px 0; padding: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); transition: transform 0.4s ease, border 2s ease; }
+    .king-animation { border-image-slice: 1; border-width: 6px; border-image-source: linear-gradient(135deg, #1976d2, #4caf50, #ff9800, #e91e63); animation: borderShift 8s ease infinite; }
+    @keyframes borderShift {
+      0% { border-image-source: linear-gradient(135deg, #1976d2, #4caf50, #ff9800, #e91e63); }
+      50% { border-image-source: linear-gradient(135deg, #ffeb3b, #9c27b0, #00bcd4, #ff5722); }
+      100% { border-image-source: linear-gradient(135deg, #1976d2, #4caf50, #ff9800, #e91e63); }
+    }
+    .program-text { font-family: 'Merriweather', serif; font-size: 1.15rem; line-height: 1.8; color: #2c3e50; text-align: justify; margin-bottom: 20px; padding: 0 20px; }
+  </style>
+
+  <section id="lesson">
+    <h1>Lesson Plan</h1>
+    <div class="lesson-box">
+      <p class="lesson-title">Enjoy the latest on my lesson plans, lesson observations and lesson reflections</p>
+      <a href="blog/l_phase_I/lesson_plan/ICT_lesson_plan.docx" target="_blank" class="lesson-btn">CLICK HERE</a>
+    </div>
+  </section>
+
+  <style>
+    .lesson-box { text-align: center; padding: 40px 20px; }
+    .lesson-title { font-size: 1.8rem; font-weight: bold; background: linear-gradient(270deg, #1976d2, #4caf50, #ff9800, #9c27b0); background-size: 800% 800%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textGlow 6s ease infinite; margin-bottom: 30px; }
+    @keyframes textGlow { 0% {background-position: 0% 50%;} 50% {background-position: 100% 50%;} 100% {background-position: 0% 50%;} }
+    .lesson-btn { display: inline-block; padding: 15px 30px; font-size: 1.2rem; font-weight: bold; text-decoration: none; color: #fff; background: linear-gradient(135deg, #1976d2, #4caf50); border-radius: 10px; box-shadow: 0 8px 20px rgba(0,0,0,0.3); transition: all 0.3s ease; letter-spacing: 1px; }
+    .lesson-btn:hover { transform: scale(1.1); background: linear-gradient(135deg, #4caf50, #1976d2); }
+  </style>
+
+  <section id="club">
+    <h1>Club</h1>
+    <div class="club-box">
+      <p class="club-p1">Club activities are like the secret sauce to a well-rounded life. They offer a ton of benefits that go way beyond just having fun.</p>
+      <p class="club-p2">First off, they're a fantastic way to learn new skills and explore your interests. Whether it's coding, debating, or photography, clubs provide a supportive environment to dive in and get hands-on experience.</p>
+      <p class="club-p3">Beyond the skills, clubs are a goldmine for building social connections. You get to meet people who share your passions, forming friendships that can last a lifetime. These connections can boost your confidence and help you feel like you belong.</p>
+      <p class="club-p4">Finally, participating in club activities can seriously boost your personal growth. You learn teamwork, leadership, and how to manage your time. Plus, it's a great way to relieve stress and have fun. In short, clubs are a fantastic way to grow, connect, and enjoy life.</p>
+      <p class="club-p5">Interestingly, on Wednesdays, Doteng Lower Secondary School offers club activities for students to enjoy during the final period.</p>
+      <p class="club-link">FOR MORE INFORMATION <a href="https://sites.google.com/view/clubsessions/home" target="_blank">CLICK HERE</a></p>
+    </div>
+  </section>
+
+  <style>
+    .club-box { padding: 30px 20px; text-align: center; }
+    .club-p1 { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #1976d2; font-weight: bold; margin-bottom: 20px; }
+    .club-p2 { font-family: 'Poppins', sans-serif; font-size: 1.2rem; color: #4caf50; margin-bottom: 20px; }
+    .club-p3 { font-family: 'Merriweather', serif; font-size: 1.2rem; color: #ff9800; font-style: italic; margin-bottom: 20px; }
+    .club-p4 { font-family: 'Georgia', serif; font-size: 1.2rem; color: #9c27b0; line-height: 1.8; margin-bottom: 20px; }
+    .club-p5 { font-family: 'Poppins', sans-serif; font-size: 1.25rem; color: #e91e63; font-weight: bold; background: rgba(233,30,99,0.1); padding: 15px; border-radius: 10px; margin-bottom: 30px; }
+    .club-link { font-size: 1.2rem; font-weight: bold; color: #000; }
+    .club-link a { color: #1976d2; text-decoration: none; font-weight: bold; }
+    .club-link a:hover { text-decoration: underline; }
+  </style>
+
+  <section id="mentor">
+    <h1>Mentee Mentor</h1>
+    <div class="mentor-box">
+      <img src="photo/mentee%20mentor.jpg" alt="Mentee Mentor" class="mentor-img" onerror="this.src='https://via.placeholder.com/600x300?text=Mentee+Mentor'">
+      <p class="mentor-link"><a href="https://sites.google.com/view/meneementor/home" target="_blank">LEARN MORE HERE</a></p>
+    </div>
+  </section>
+
+  <style>
+    .mentor-box { text-align: center; padding: 30px 20px; }
+    .mentor-img { width: 100%; max-width: 600px; border-radius: 20px; border: 6px solid transparent; background: linear-gradient(135deg, #1976d2, #4caf50, #ff9800, #9c27b0); padding: 5px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin-bottom: 30px; transition: transform 0.3s ease; }
+    .mentor-img:hover { transform: scale(1.05); }
+    .mentor-link a { font-size: 2rem; font-weight: bold; text-decoration: none; letter-spacing: 2px; background: linear-gradient(270deg, #1976d2, #4caf50, #ff9800, #e91e63); background-size: 800% 800%; -webkit-background-clip: text; -webkit-text-fill-color: transparent; animation: textGlow 6s ease infinite; }
+  </style>
+
+  <section id="spotlights">
+    <h1>Spotlights</h1>
+    <div class="spotlights-box">
+      <p class="spotlights-quote">THE STAGE OF LEARNING AND DEVELOPING IS A DYNAMIC JOURNEY, WHERE CURIOSITY BLOSSOMS INTO UNDERSTANDING, AND EACH NEW EXPERIENCE SHAPES THE EVOLVING MASTERPIECE OF THE SELF.</p>
+      <p class="spotlights-link"><a href="https://sites.google.com/view/sportlightsweb/home" target="_blank">CLICK HERE TO LEARN MORE ABOUT DOTENG LSS AND MY TIME HERE AT SCHOOL</a></p>
+    </div>
+  </section>
+
+  <style>
+    .spotlights-box { text-align: center; padding: 30px 20px; }
+    .spotlights-quote { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: bold; text-transform: uppercase; color: #1976d2; margin-bottom: 25px; line-height: 1.6; }
+    .spotlights-link a { font-family: 'Poppins', sans-serif; font-size: 1.25rem; font-weight: bold; color: #4caf50; text-decoration: none; transition: all 0.3s ease; }
+    .spotlights-link a:hover { text-decoration: underline; color: #ff9800; }
+  </style>
+
+  <section id="daylife"><h1>Day in the Life</h1><p>Describe your daily routine here.</p></section>
+
+  <section id="scout">
+    <h1>Scout</h1>
+    <div class="scout-box">
+      <img src="photo/scout.jpg" alt="Scout" class="scout-img" onerror="this.src='https://via.placeholder.com/120?text=Scout'">
+      <p class="scout-desc">Bhutan Scout Association (BSA) established in 1996 and now is a rapidly growing coeducational youth organization.</p>
+      <div class="king-quote">
+        <img src="photo/king.jpg" alt="His Majesty the King" class="king-img" onerror="this.src='https://via.placeholder.com/50?text=King'">
+        <p class="quote-text">“We cannot foresee it but as long as we approach it with right intentions and values, I assure you of a bright future.” - His Majesty the King</p>
+      </div>
+      <p class="scout-link"><a href="https://sites.google.com/view/scoutsessions/home" target="_blank">READ MORE</a></p>
+    </div>
+  </section>
+
+  <style>
+    .scout-box { text-align: center; padding: 30px 20px; }
+    .scout-img { width: 120px; height: 120px; object-fit: cover; border-radius: 50%; border: 4px solid #1976d2; box-shadow: 0 6px 20px rgba(0,0,0,0.3); margin-bottom: 20px; }
+    .scout-desc { font-family: 'Poppins', sans-serif; font-size: 1.2rem; color: #4caf50; margin-bottom: 25px; }
+    .king-quote { display: flex; flex-direction: row; align-items: center; justify-content: center; gap: 15px; background: rgba(255,235,59,0.1); padding: 15px 20px; border-radius: 15px; margin-bottom: 25px; }
+    .king-img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid #ff9800; object-fit: cover; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+    .quote-text { font-family: 'Georgia', serif; font-size: 1.1rem; font-style: italic; color: #9c27b0; max-width: 500px; text-align: left; }
+    .scout-link a { font-size: 1.3rem; font-weight: bold; text-decoration: none; color: #1976d2; transition: all 0.3s ease; }
+    .scout-link a:hover { text-decoration: underline; color: #4caf50; }
+  </style>
+
+  <section id="expression"><h1>Expression Corner</h1><p>Express yourself creatively here.</p></section>
+
+  <section id="phase2_section">
+    <h1>Guided Learning Phase</h1>
+    <div class="phase2-container">
+      <p class="phase2-text">
+        This marks the second phase of my SITP journey, a significant transition from the initial shadowing stage into the guided learning phase. In the shadowing phase, I observed my mentors closely, learning from their classroom management, teaching strategies, and interactions with students. However, the guided learning phase brought a new level of responsibility and growth, as I began to step forward with my own teaching while still receiving support and feedback from experienced teachers. Guided learning is not about working alone; rather, it is a collaborative stage where I applied the methods I had observed, experimented with my own approaches, and reflected on the outcomes under the guidance of mentors. This phase allowed me to design lesson plans, deliver instructions, and engage students directly, while also learning to adapt when challenges arose. I discovered the importance of stimulus variation, humor, and clear transitions in keeping students attentive, and I realized that teaching is not only about content delivery but also about creating a supportive environment where diverse learners feel included. The guided learning phase taught me patience, resilience, and the value of constructive feedback, as every correction from my mentors became a stepping stone toward improvement. It was during this stage that I began to see myself not just as a learner but as a teacher in practice, gradually building confidence and professional identity. In essence, this phase was a bridge between observation and independence, reminding me that teaching is a journey of continuous growth, where guidance and reflection shape us into educators capable of inspiring young minds.
+      </p>
+      <div style="text-align: center;">
+        <a href="https://sites.google.com/rub.edu.bt/phasell/home" target="_blank" class="phase2-link-btn">
+          <strong>READ MORE HERE</strong>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section id="phase3_section">
+    <h1>Independent Teaching Phase</h1>
+    <div class="phase3-outer-frame">
+      <div class="phase3-container">
+        <p class="phase3-text">
+          This stage marks the third phase of my SITP journey, where I transitioned from guided learning into independent teaching, taking on the full responsibility of planning, delivering, and managing lessons on my own. Unlike the earlier phases, where I observed mentors or taught under their guidance, this phase demanded that I stand at the forefront as the teacher, accountable for every aspect of the classroom experience. It was both challenging and empowering, as I had to design lesson plans carefully, anticipate student needs, and adapt strategies in real time without relying on immediate mentor intervention. Independent teaching taught me the importance of time management, resilience, and confidence, as I was responsible not only for content delivery but also for maintaining discipline, encouraging participation, and ensuring that diverse learners felt included. I realized that teaching is not simply about presenting information—it is about creating a supportive environment where students can thrive, even when unexpected distractions arise. This phase also highlighted the value of reflection; after each lesson, I evaluated what worked well and what needed improvement, using those insights to refine my approach. Taking full responsibility made me appreciate the balance between authority and empathy, and it strengthened my professional identity as a teacher. In essence, the independent teaching phase was a turning point in my journey, reminding me that while guidance is essential in the beginning, true growth comes when we step forward with courage, embrace responsibility, and learn to trust our own abilities to inspire and lead students.
+        </p>
+        <div style="text-align: center;">
+          <div class="circle-link-wrapper">
+            <a href="https://sites.google.com/rub.edu.bt/phaselll/home" target="_blank" class="phase3-circle-btn">
+              <strong>READ<br>MORE<br>HERE</strong>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="video_section">
+    <h1>Video Highlights</h1>
+    <div class="video-wrapper">
+      <video class="video-element" controls>
+        <source src="SE/mtvs.mp4" type="video/mp4">
+        Your browser does not support the video tag.
+      </video>
+    </div>
+  </section>
+
+  <section id="skills_section">
+    <h1>My Skills & Experience</h1>
+    <div class="skills-container">
+      <p class="skills-passage">
+        I feel fortunate to have had the opportunity to explore a few programming languages and design skills, even though I am still very much a beginner. My journey began at college, where I was introduced to the basics, and I have continued to strengthen my knowledge through online education. A few of us from RUB were given the chance to take online programming classes, which opened doors to new learning experiences. Among the highlights of my journey was successfully completing the CS50 Web Programming with Python and JavaScript course offered by Harvard University, taught by some truly inspiring professors. This course not only deepened my understanding of programming concepts but also introduced me to practical skills in web development, debugging, and problem‑solving. Receiving an appreciation certificate at the end of the program was a proud moment, as it validated my effort and commitment to learning. More importantly, it motivated me to continue exploring this field with curiosity and determination. I am eager to take the next course and expand my knowledge further, because I believe that programming and design are not just technical skills but creative tools that empower us to build, innovate, and contribute meaningfully to education and beyond. This journey has taught me that learning is a continuous process, and even as a beginner, every step forward brings me closer to mastering the language of technology. Although I am still at the beginner stage, I am determined to continue developing the programming and design skills that I have already gained a basic foundation in.
+      </p>
+      
+      <div class="skills-grid">
+        <div class="skill-card">
+          <div class="skill-icon">💻</div>
+          <div class="skill-info">
+            <h3>Programming Languages</h3>
+            <p>Object‑Oriented Python, Java, and JavaScript</p>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🗄️</div>
+          <div class="skill-info">
+            <h3>Database Management</h3>
+            <p>SQL and NoSQL</p>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">☁️</div>
+          <div class="skill-info">
+            <h3>Cloud Computing</h3>
+            <p>Google Cloud Platform</p>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">♾️</div>
+          <div class="skill-info">
+            <h3>DevOps</h3>
+            <p>Continuous integration, deployment foundations, and workflow operations</p>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🎨</div>
+          <div class="skill-info">
+            <h3>Web Design</h3>
+            <p>HTML & CSS, Front‑End Architecture, and Back‑End Engineering</p>
+          </div>
+        </div>
+
+        <div class="skill-card">
+          <div class="skill-icon">🎬</div>
+          <div class="skill-info">
+            <h3>Editing & Creative Skills</h3>
+            <p>Motion animation with HTML and Adobe Premiere Pro, Blender 3D animation inside Blender Software, and Whiteboard Animation video creation</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <script>
+    const mainMenuItems = [
+      { id: "home", name: "Home", type: "internal" },
+      { id: "about", name: "About Me", type: "internal" },
+      { id: "scout", name: "Scout", type: "internal" },
+      { id: "games", name: "Games", type: "internal" },
+      { id: "phase1_menu", name: "PHASE I", type: "submenu" },
+      { id: "phase2_section", name: "Phase II", type: "internal" },
+      { id: "phase3_section", name: "Phase III", type: "internal" },
+      { id: "video_section", name: "Video Highlights", type: "internal" },
+      { id: "skills_section", name: "My Skills", type: "internal" }
+    ];
+
+    const phase1Items = [
+      { id: "back_main", name: "← Back", type: "back" },
+      { id: "reflections", name: "Reflections", type: "internal" },
+      { id: "programs", name: "Programs", type: "internal" },
+      { id: "lesson", name: "Lesson Plan", type: "internal" },
+      { id: "club", name: "Club", type: "internal" },
+      { id: "mentor", name: "Mentee Mentor", type: "internal" },
+      { id: "spotlights", name: "Spotlights", type: "internal" },
+      { id: "daylife", name: "Day in the Life", type: "internal" },
+      { id: "expression", name: "Expression Corner", type: "internal" }
+    ];
+
+    const menuContainer = document.getElementById("menu");
+    const sections = document.querySelectorAll("section");
+    let currentMenuState = "main";
+
+    function renderMenu(menuType) {
+      currentMenuState = menuType;
+      const targetItems = (menuType === "phase1") ? phase1Items : mainMenuItems;
+      
+      menuContainer.innerHTML = "";
+      
+      targetItems.forEach(item => {
+        const li = document.createElement("li");
+        const a = document.createElement("a");
+        a.textContent = item.name;
+        
+        if(item.id === "phase2_section" || item.id === "phase3_section" || item.type === "submenu") a.classList.add("phase-btn");
+        if(item.type === "back") a.classList.add("back-btn");
+
+        a.addEventListener("click", function(e) {
+          e.preventDefault();
+          
+          if (item.type === "submenu") {
+            renderMenu("phase1");
+          } else if (item.type === "back") {
+            renderMenu("main");
+          } else {
+            switchSection(item.id);
+          }
+        });
+        
+        li.appendChild(a);
+        menuContainer.appendChild(li);
+      });
+      
+      menuContainer.classList.add("menu-enter");
+      setTimeout(() => { menuContainer.classList.remove("menu-enter"); }, 300);
+    }
+
+    function switchSection(targetId) {
+      sections.forEach(section => section.classList.remove("active"));
+      
+      const targetSection = document.getElementById(targetId);
+      if (targetSection) {
+        targetSection.classList.add("active");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        
+        // Return to main configuration menu automatically if selecting a primary tier element
+        if(["home", "about", "scout", "games", "phase2_section", "phase3_section", "video_section", "skills_section"].includes(targetId)) {
+           renderMenu("main");
+        }
+      }
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+      renderMenu("main");
+      
+      if (window.location.hash) {
+        const hash = window.location.hash.substring(1);
+        if (document.getElementById(hash)) {
+          switchSection(hash);
+          const isPhase1Section = phase1Items.some(item => item.id === hash && item.type === "internal");
+          if(isPhase1Section) {
+            renderMenu("phase1");
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
